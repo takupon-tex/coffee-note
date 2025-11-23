@@ -225,6 +225,19 @@ textarea {
     margin-top: 4px;
 }
 
+.log-thumb-wrapper {
+    margin-top: 6px;
+}
+
+.log-thumb {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
 /* スマホ向け微調整 */
 @media (max-width: 400px) {
     .app-container {
