@@ -1,3 +1,6 @@
+// ===== 設定：写真を残す最大件数 =====
+const MAX_PHOTO_LOGS = 30;
+
 // ===== メイン保存処理 =====
 
 function saveData() {
@@ -88,7 +91,11 @@ function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
         date: new Date().toLocaleDateString()
     };
 
+    // 新しいログを追加
     logs.push(data);
+
+    // 写真付きログの件数を制限（最新MAX_PHOTO_LOGS件だけ写真を残す）
+    logs = trimPhotoLogs(logs, MAX_PHOTO_LOGS);
 
     try {
         localStorage.setItem("coffeeLogs", JSON.stringify(logs));
@@ -106,6 +113,23 @@ function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
     if (photoInput) photoInput.value = "";
 
     showLogs();
+}
+
+// 写真付きログを MAX_PHOTO_LOGS 件までに抑える
+function trimPhotoLogs(logs, maxPhoto) {
+    let photoCount = 0;
+    // logs は古い順で、新しいものほど後ろに入っている前提
+    for (let i = logs.length - 1; i >= 0; i--) {
+        const log = logs[i];
+        if (log.photo) {
+            photoCount++;
+            if (photoCount > maxPhoto) {
+                // 古い方から順番に写真だけ消す（テキストは残す）
+                log.photo = null;
+            }
+        }
+    }
+    return logs;
 }
 
 // ===== ログ一覧表示 =====
@@ -149,7 +173,7 @@ function showLogs() {
     });
 }
 
-// ===== ログ全削除 =====
+// ===== ログ全削除（ボタン用） =====
 function clearLogs() {
     if (!confirm("本当に全てのログを削除しますか？\n（元に戻せません）")) return;
     localStorage.removeItem("coffeeLogs");
