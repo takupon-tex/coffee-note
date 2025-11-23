@@ -253,3 +253,18 @@ textarea {
         font-size: 18px;
     }
 }
+
+.secondary-button {
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+}
+.secondary-button:active {
+    background: rgba(255, 255, 255, 0.06);
+}
+
