@@ -1,4 +1,4 @@
-// 写真付きでログを保存する
+// 写真付きでログを保存
 
 function saveData() {
     const beanName = document.getElementById("beanName").value;
@@ -9,8 +9,14 @@ function saveData() {
     const photoInput = document.getElementById("photo");
     const file = photoInput.files[0];
 
-    // 画像がある場合は FileReader で読み込んでから保存
-    if (file && file.type.startsWith("image/")) {
+    // 入力チェックざっくり（豆名かメモどっちかは入っててほしい）
+    if (!beanName && !memo) {
+        alert("最低でも「豆の名前」か「メモ」は入れてください。");
+        return;
+    }
+
+    if (file && file.type && file.type.indexOf("image") === 0) {
+        // 画像あり
         const reader = new FileReader();
         reader.onload = function (e) {
             const photoDataUrl = e.target.result;
@@ -18,7 +24,7 @@ function saveData() {
         };
         reader.readAsDataURL(file);
     } else {
-        // 写真なし
+        // 画像なし
         saveLog(beanName, roast, brew, rate, memo, null);
     }
 }
@@ -30,7 +36,7 @@ function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
         brew: brew,
         rate: rate,
         memo: memo,
-        photo: photoDataUrl, // ← 写真のデータURL
+        photo: photoDataUrl, // Base64画像 or null
         date: new Date().toLocaleDateString()
     };
 
@@ -38,7 +44,7 @@ function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
     logs.push(data);
     localStorage.setItem("coffeeLogs", JSON.stringify(logs));
 
-    // フォームをリセット
+    // フォームリセット
     document.getElementById("beanName").value = "";
     document.getElementById("rate").value = "";
     document.getElementById("memo").value = "";
@@ -47,18 +53,16 @@ function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
     showLogs();
 }
 
-// ログ一覧を表示（写真サムネ付き）
+// ログ一覧表示（新しいものを上に）
 function showLogs() {
     const logs = JSON.parse(localStorage.getItem("coffeeLogs") || "[]");
     const list = document.getElementById("logList");
     list.innerHTML = "";
 
-    // 新しいログを上にしたいので reverse()
     logs.slice().reverse().forEach(log => {
         const div = document.createElement("div");
         div.className = "card";
 
-        // 写真があればサムネ用HTML
         const photoHtml = log.photo
             ? `<div class="log-thumb-wrapper">
                    <img class="log-thumb" src="${log.photo}" alt="coffee photo">
@@ -67,12 +71,12 @@ function showLogs() {
 
         div.innerHTML = `
             <div class="log-header">
-                <span class="log-date">${log.date}</span>
-                <span class="log-rate">★${log.rate || "-"}</span>
+                <span class="log-date">${log.date || ""}</span>
+                <span class="log-rate">${log.rate ? "★" + log.rate : ""}</span>
             </div>
             <div class="log-main">${log.beanName || "（豆名なし）"}</div>
             <div class="log-sub">
-                焙煎：${log.roast} ／ 抽出：${log.brew}
+                焙煎：${log.roast || "-"} ／ 抽出：${log.brew || "-"}
             </div>
             ${photoHtml}
             ${log.memo ? `<div class="log-memo">${log.memo}</div>` : ""}
