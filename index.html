@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コーヒーノート</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">☕</div>
+            <div class="title-block">
+                <h1>コーヒーノート</h1>
+                <p class="subtitle">今日の一杯を、ちょっと丁寧に記録。</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="card card-form">
+                <h2 class="section-title">今日のコーヒーを記録する</h2>
+
+                <div class="form-group">
+                    <label for="beanName">豆の名前</label>
+                    <input id="beanName" type="text" placeholder="例：エチオピア ナチュラル">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roast">焙煎度</label>
+                        <select id="roast">
+                            <option>ライト</option>
+                            <option>ミディアム</option>
+                            <option>シティ</option>
+                            <option>フルシティ</option>
+                            <option>フレンチ</option>
+                            <option>イタリアン</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brew">抽出方法</label>
+                        <select id="brew">
+                            <option>ハンドドリップ</option>
+                            <option>フレンチプレス</option>
+                            <option>エスプレッソ</option>
+                            <option>エアロプレス</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rate">評価（1〜5）</label>
+                    <input id="rate" type="number" min="1" max="5" placeholder="例：4">
+                </div>
+
+                <div class="form-group">
+                    <label for="memo">メモ</label>
+                    <textarea id="memo" rows="3" placeholder="香り・味・反省点などをメモ…"></textarea>
+                </div>
+
+                <button class="primary-button" onclick="saveData()">💾 この内容で保存</button>
+                <p class="hint">※ データはこの端末のブラウザ内（ローカル）に保存されます。</p>
+            </section>
+
+            <section>
+                <h2 class="section-title">📖 ログ一覧</h2>
+                <div id="logList" class="log-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
