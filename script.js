@@ -1,184 +1,99 @@
-// ===== 設定：写真を残す最大件数 =====
-const MAX_PHOTO_LOGS = 30;
+// ページ読み込み時にログを表示
+document.addEventListener('DOMContentLoaded', () => {
+    renderLogs();
 
-// ===== メイン保存処理 =====
+    // 保存ボタンのイベント
+    document.getElementById('saveBtn').addEventListener('click', saveLog);
+});
 
-function saveData() {
-    const beanName = document.getElementById("beanName").value || "";
-    const roast    = document.getElementById("roast").value || "";
-    const brew     = document.getElementById("brew").value || "";
-    const rate     = document.getElementById("rate").value || "";
-    const memo     = document.getElementById("memo").value || "";
+// ログを保存する関数
+function saveLog() {
+    // 入力値の取得
+    const beanName = document.getElementById('beanName').value;
+    const roast = document.getElementById('roast').value;
+    const brewMethod = document.getElementById('brewMethod').value;
+    const rating = document.getElementById('rating').value;
+    const memo = document.getElementById('memo').value;
 
-    const photoInput = document.getElementById("photo");
-    const file = (photoInput && photoInput.files && photoInput.files[0]) ? photoInput.files[0] : null;
-
-    // 写真あり → 圧縮してから保存
-    if (file && file.type && file.type.indexOf("image") === 0) {
-        compressImage(file, 800, 800, 0.7, function (compressedDataUrl) {
-            saveLog(beanName, roast, brew, rate, memo, compressedDataUrl);
-        }, function () {
-            // 圧縮失敗してもテキストだけ保存
-            saveLog(beanName, roast, brew, rate, memo, null);
-        });
-    } else {
-        // 写真なし
-        saveLog(beanName, roast, brew, rate, memo, null);
-    }
-}
-
-// 画像圧縮（Canvasで縮小＆JPEG化）
-function compressImage(file, maxWidth, maxHeight, quality, onSuccess, onError) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const img = new Image();
-        img.onload = function () {
-            let width  = img.width;
-            let height = img.height;
-
-            // 比率を保ったまま最大サイズに縮小
-            if (width > maxWidth || height > maxHeight) {
-                const ratio = Math.min(maxWidth / width, maxHeight / height);
-                width  = width * ratio;
-                height = height * ratio;
-            }
-
-            const canvas = document.createElement("canvas");
-            canvas.width  = width;
-            canvas.height = height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, height);
-
-            try {
-                const dataUrl = canvas.toDataURL("image/jpeg", quality);
-                onSuccess(dataUrl);
-            } catch (err) {
-                console.error("toDataURL error", err);
-                onError();
-            }
-        };
-        img.onerror = function () {
-            console.error("image load error");
-            onError();
-        };
-        img.src = e.target.result;
-    };
-    reader.onerror = function () {
-        console.error("file read error");
-        onError();
-    };
-    reader.readAsDataURL(file);
-}
-
-// ログ1件を配列に追加して保存
-function saveLog(beanName, roast, brew, rate, memo, photoDataUrl) {
-    let logs;
-    try {
-        const raw = localStorage.getItem("coffeeLogs");
-        logs = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(logs)) logs = [];
-    } catch (e) {
-        logs = [];
-    }
-
-    const data = {
-        beanName,
-        roast,
-        brew,
-        rate,
-        memo,
-        photo: photoDataUrl || null,
-        date: new Date().toLocaleDateString()
-    };
-
-    // 新しいログを追加
-    logs.push(data);
-
-    // 写真付きログの件数を制限（最新MAX_PHOTO_LOGS件だけ写真を残す）
-    logs = trimPhotoLogs(logs, MAX_PHOTO_LOGS);
-
-    try {
-        localStorage.setItem("coffeeLogs", JSON.stringify(logs));
-    } catch (e) {
-        console.error(e);
-        alert("保存に失敗しました（容量オーバーの可能性があります）。\n「全てのログを削除」で一度リセットすると直る場合があります。");
+    // 必須チェック（豆の名前が空なら保存しない）
+    if (!beanName) {
+        alert("豆の名前を入力してください");
         return;
     }
 
-    // フォームリセット
-    document.getElementById("beanName").value = "";
-    document.getElementById("rate").value     = "";
-    document.getElementById("memo").value     = "";
-    const photoInput = document.getElementById("photo");
-    if (photoInput) photoInput.value = "";
+    // 日付の取得
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
 
-    showLogs();
+    // データオブジェクト作成
+    const logData = {
+        id: Date.now(), // ユニークID
+        date: dateStr,
+        beanName,
+        roast,
+        brewMethod,
+        rating,
+        memo
+    };
+
+    // ローカルストレージから既存データを取得
+    let logs = JSON.parse(localStorage.getItem('coffeeLogs')) || [];
+    
+    // 新しいデータを追加（先頭に）
+    logs.unshift(logData);
+
+    // ローカルストレージに保存
+    localStorage.setItem('coffeeLogs', JSON.stringify(logs));
+
+    // フォームをリセット
+    document.getElementById('beanName').value = '';
+    document.getElementById('memo').value = '';
+    document.getElementById('rating').value = 3;
+    document.getElementById('ratingVal').innerText = 3;
+
+    alert('保存しました！☕');
+    
+    // 一覧を再描画
+    renderLogs();
 }
 
-// 写真付きログを MAX_PHOTO_LOGS 件までに抑える
-function trimPhotoLogs(logs, maxPhoto) {
-    let photoCount = 0;
-    // logs は古い順で、新しいものほど後ろに入っている前提
-    for (let i = logs.length - 1; i >= 0; i--) {
-        const log = logs[i];
-        if (log.photo) {
-            photoCount++;
-            if (photoCount > maxPhoto) {
-                // 古い方から順番に写真だけ消す（テキストは残す）
-                log.photo = null;
-            }
-        }
-    }
-    return logs;
-}
+// ログを表示する関数
+function renderLogs() {
+    const listContainer = document.getElementById('logList');
+    const logs = JSON.parse(localStorage.getItem('coffeeLogs')) || [];
 
-// ===== ログ一覧表示 =====
+    listContainer.innerHTML = ''; // 一旦クリア
 
-function showLogs() {
-    let logs;
-    try {
-        const raw = localStorage.getItem("coffeeLogs");
-        logs = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(logs)) logs = [];
-    } catch (e) {
-        logs = [];
-    }
+    logs.forEach(log => {
+        // 星の表示を作る
+        const stars = '★'.repeat(Math.floor(log.rating)) + (log.rating % 1 !== 0 ? '☆' : '');
 
-    const list = document.getElementById("logList");
-    if (!list) return;
-    list.innerHTML = "";
-
-    logs.slice().reverse().forEach(log => {
-        const div = document.createElement("div");
-        div.className = "card";
-
-        const photoHtml = log.photo
-            ? `<div class="log-thumb-wrapper">
-                   <img class="log-thumb" src="${log.photo}" alt="coffee photo">
-               </div>`
-            : "";
-
-        div.innerHTML = `
-            <div class="log-header">
-                <span class="log-date">${log.date || ""}</span>
-                <span class="log-rate">${log.rate ? "★" + log.rate : ""}</span>
+        const html = `
+            <div class="log-card">
+                <div class="log-header">
+                    <div class="log-title">${log.beanName}</div>
+                    <div class="log-date">${log.date}</div>
+                </div>
+                <div class="log-details">
+                    <span>${log.roast}</span>
+                    <span>${log.brewMethod}</span>
+                    <span style="color: #f57f17; font-weight:bold;">${stars} (${log.rating})</span>
+                </div>
+                <div class="log-memo">${log.memo}</div>
+                <button class="delete-btn" onclick="deleteLog(${log.id})">削除</button>
             </div>
-            <div class="log-main">${log.beanName || "（豆名なし）"}</div>
-            <div class="log-sub">
-                焙煎：${log.roast || "-"} ／ 抽出：${log.brew || "-"}</div>
-            ${photoHtml}
-            ${log.memo ? `<div class="log-memo">${log.memo}</div>` : ""}
         `;
-        list.appendChild(div);
+        listContainer.insertAdjacentHTML('beforeend', html);
     });
 }
 
-// ===== ログ全削除（ボタン用） =====
-function clearLogs() {
-    if (!confirm("本当に全てのログを削除しますか？\n（元に戻せません）")) return;
-    localStorage.removeItem("coffeeLogs");
-    showLogs();
-}
+// ログを削除する関数
+function deleteLog(id) {
+    if (!confirm('この記録を削除しますか？')) return;
 
-// 初期表示
-showLogs();
+    let logs = JSON.parse(localStorage.getItem('coffeeLogs')) || [];
+    logs = logs.filter(log => log.id !== id);
+    localStorage.setItem('coffeeLogs', JSON.stringify(logs));
+    
+    renderLogs();
+}

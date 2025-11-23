@@ -1,270 +1,259 @@
+/* 全体のリセットとフォント設定 */
 :root {
-    --bg-wood-dark: #3b2f2f;
-    --bg-wood-mid: #4a3832;
-    --card-bg: rgba(255, 255, 255, 0.06);
-    --accent: #cdaA7d;
-    --accent-strong: #d9b073;
-    --text-main: #f8f5f0;
-    --text-muted: #d0c7bd;
-    --button-bg: #8b5a2b;
-    --button-bg-hover: #a86a30;
-    --border-soft: rgba(255, 255, 255, 0.08);
-    --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.4);
-    --radius-card: 18px;
+    --wood-dark: #3e2723;
+    --wood-light: #d7ccc8;
+    --chalk-board: #263238;
+    --chalk-text: #eceff1;
+    --accent-gold: #ffb74d;
 }
 
-/* 背景を木目っぽくする（グラデ＋細い線） */
 body {
+    font-family: 'Kaisei Decol', serif; /* 日本語セリフ体で上品に */
     margin: 0;
     padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-    color: var(--text-main);
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.04),
-            rgba(255, 255, 255, 0.04) 1px,
-            transparent 1px,
-            transparent 6px
-        ),
-        radial-gradient(circle at top left, #5b3f33, #2b1f1b);
+    background-color: #1a1a1a;
+    color: #333;
     min-height: 100vh;
+    position: relative;
 }
 
-/* 中央の“ノート”コンテナ */
-.app-container {
-    max-width: 480px;
+/* 木目の背景画像（Unsplashの画像を使用） */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1541345908838-169c456329a3?q=80&w=1000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    filter: brightness(0.7) sepia(0.3); /* 少し暗くして落ち着かせる */
+}
+
+.container {
+    max-width: 600px;
     margin: 0 auto;
-    padding: 20px 16px 40px;
+    padding: 20px;
 }
 
 /* ヘッダー */
-.app-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 10px 14px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.02));
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+header {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 24px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 30% 20%, #f9f3e8, #a66a36);
+.logo-area {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
-}
-
-.title-block h1 {
-    font-size: 20px;
-    margin: 0;
-    letter-spacing: 0.03em;
-}
-
-.subtitle {
-    margin: 2px 0 0;
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-/* セクションタイトル */
-.section-title {
-    font-size: 16px;
-    margin: 0 0 12px;
-    letter-spacing: 0.05em;
-}
-
-/* カード */
-.card {
-    background: var(--card-bg);
-    border-radius: var(--radius-card);
-    padding: 16px 14px 18px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid var(--border-soft);
-    backdrop-filter: blur(8px);
-}
-
-.card-form {
-    margin-bottom: 24px;
-}
-
-/* フォーム系 */
-.form-group {
-    margin-bottom: 12px;
-}
-
-.form-row {
-    display: flex;
     gap: 10px;
 }
 
-.form-row .form-group {
+h1 {
+    font-family: 'Yomogi', cursive; /* タイトルは手書き風 */
+    font-size: 2.2rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 5px;
+    font-family: sans-serif;
+}
+
+.coffee-icon {
+    color: var(--accent-gold);
+}
+
+/* 黒板風カード */
+.chalkboard {
+    background-color: var(--chalk-board);
+    color: var(--chalk-text);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 0 4px #4e342e; /* 外側の影と内側の木枠 */
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.chalkboard h2 {
+    font-family: 'Yomogi', cursive;
+    text-align: center;
+    margin-top: 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.3);
+    padding-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+/* フォーム要素 */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+}
+
+.half {
     flex: 1;
 }
 
 label {
     display: block;
-    font-size: 12px;
+    font-size: 0.8rem;
+    color: #b0bec5;
     margin-bottom: 4px;
-    color: var(--text-muted);
+    letter-spacing: 0.5px;
 }
 
-input,
+/* 入力欄のデザイン（チョーク風） */
+input[type="text"],
 select,
 textarea {
     width: 100%;
-    padding: 9px 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(0, 0, 0, 0.25);
-    color: var(--text-main);
-    font-size: 14px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.4);
+    color: white;
+    font-size: 1rem;
+    padding: 8px 0;
+    font-family: 'Kaisei Decol', serif;
     box-sizing: border-box;
-    outline: none;
-    transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition: border-color 0.3s;
 }
 
-input::placeholder,
-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.35);
-    font-size: 12px;
-}
-
-input:focus,
+input[type="text"]:focus,
 select:focus,
 textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px rgba(205, 170, 125, 0.5);
-    background: rgba(0, 0, 0, 0.4);
+    outline: none;
+    border-bottom-color: var(--accent-gold);
 }
 
-textarea {
-    resize: vertical;
+/* Selectの中身（ブラウザ標準が見えないように調整） */
+select {
+    cursor: pointer;
+    appearance: none; /* デフォルトの矢印を消す */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 top 50%;
+    background-size: 10px auto;
+}
+/* selectの選択肢の背景色は黒板色に */
+select option {
+    background-color: var(--chalk-board);
+    color: white;
+}
+
+/* 評価スライダー */
+.range-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent-gold);
+}
+.rating-display {
+    font-family: 'Yomogi', cursive;
+    font-size: 1.5rem;
+    color: var(--accent-gold);
 }
 
 /* ボタン */
-.primary-button {
+.wood-btn {
     width: 100%;
-    padding: 12px;
-    margin-top: 4px;
-    border-radius: 999px;
-    border: none;
-    background: linear-gradient(135deg, var(--button-bg), var(--button-bg-hover));
-    color: #fff;
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin-top: 20px;
+    padding: 14px;
+    background: linear-gradient(to bottom, #d4a76a, #a17a43); /* 真鍮・金のような色 */
+    border: 1px solid #5d4037;
+    border-radius: 8px;
+    color: #3e2723;
+    font-weight: bold;
+    font-size: 1.1rem;
     cursor: pointer;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    box-shadow: 0 4px 0 #5d4037, 0 5px 10px rgba(0,0,0,0.3); /* 立体感 */
+    transition: all 0.1s;
+    font-family: 'Kaisei Decol', serif;
 }
 
-.primary-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-    filter: brightness(0.97);
-}
-
-/* ヒント */
-.hint {
-    margin-top: 6px;
-    font-size: 11px;
-    color: var(--text-muted);
+.wood-btn:active {
+    transform: translateY(4px); /* 押したときに沈む */
+    box-shadow: 0 0 0 #5d4037, inset 0 2px 5px rgba(0,0,0,0.3);
 }
 
 /* ログ一覧 */
-.log-list {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.log-section h3 {
+    color: #fff;
+    font-family: 'Yomogi', cursive;
+    border-bottom: 2px solid var(--accent-gold);
+    display: inline-block;
+    padding-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
-.log-list .card {
-    padding: 10px 12px 12px;
+.log-card {
+    background-color: rgba(255, 255, 255, 0.95); /* 紙のカード風 */
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    border-left: 6px solid var(--accent-gold);
 }
 
 .log-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 4px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.log-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #3e2723;
 }
 
 .log-date {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 0.75rem;
+    color: #757575;
 }
 
-.log-rate {
-    font-size: 13px;
-    color: var(--accent-strong);
-}
-
-.log-main {
-    font-size: 14px;
-    margin-bottom: 2px;
-}
-
-.log-sub {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 2px;
+.log-details span {
+    display: inline-block;
+    background: #eceff1;
+    color: #455a64;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
 }
 
 .log-memo {
-    font-size: 12px;
-    margin-top: 4px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #555;
+    white-space: pre-wrap;
 }
 
-/* 写真サムネ */
-.log-thumb-wrapper {
-    margin-top: 6px;
-}
-
-.log-thumb {
-    width: 100%;
-    max-height: 180px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
-}
-
-/* スマホ向け微調整 */
-@media (max-width: 400px) {
-    .app-container {
-        padding: 16px 10px 30px;
-    }
-
-    .app-header {
-        padding: 8px 10px;
-    }
-
-    .title-block h1 {
-        font-size: 18px;
-    }
-}
-
-.secondary-button {
-    padding: 6px 10px;
-    margin-bottom: 8px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 11px;
+.delete-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #cfd8dc;
     cursor: pointer;
+    font-size: 0.8rem;
 }
-.secondary-button:active {
-    background: rgba(255, 255, 255, 0.06);
+.delete-btn:hover {
+    color: #ef5350;
 }
-
