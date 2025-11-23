@@ -1,90 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Note - Barista Style</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Yomogi&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Brews - Coffee Note</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="app">
+    <header class="app-header">
+      <div class="header-icon">☕</div>
+      <div class="header-text">
+        <h1>Your Brews</h1>
+        <p>This Month: <span id="cupCount">0</span> cups</p>
+      </div>
+    </header>
 
-    <div class="wood-overlay"></div>
+    <main>
+      <div id="brewList" class="brew-list"></div>
+    </main>
 
-    <div class="container">
-        <header>
-            <div class="logo-area">
-                <svg class="coffee-icon" viewBox="0 0 24 24" width="40" height="40">
-                    <path fill="currentColor" d="M18.5 3H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-1h1c1.66 0 3-1.34 3-3s-1.34-3-3-3h-1V5c0-1.1-.9-2-2-2zm-1.5 14H7V5h10v12zm3-4h-1.5v-4H20c.55 0 1 .45 1 1s-.45 1-1 1zM4 21h16v2H4z"/>
-                </svg>
-                <h1>Coffee Note</h1>
-            </div>
-            <p class="subtitle">今日の一杯を、ちょっと丁寧に記録。</p>
-        </header>
+    <!-- 右下の＋ボタン -->
+    <button class="fab" id="openFormBtn">+</button>
 
-        <main>
-            <section class="chalkboard">
-                <h2>New Entry</h2>
-                
-                <div class="form-group">
-                    <label for="beanName">豆の名前 / BEANS</label>
-                    <input type="text" id="beanName" placeholder="例：エチオピア イルガチェフェ">
-                </div>
+    <!-- 追加用シート -->
+    <div class="overlay hidden" id="brewFormOverlay">
+      <div class="sheet">
+        <div class="sheet-header">
+          <h2>Add Brew</h2>
+          <button class="close-btn" id="closeFormBtn">✕</button>
+        </div>
 
-                <div class="row">
-                    <div class="form-group half">
-                        <label for="roast">焙煎度 / ROAST</label>
-                        <select id="roast">
-                            <option value="ライト">ライト (浅煎り)</option>
-                            <option value="シナモン">シナモン</option>
-                            <option value="ミディアム">ミディアム (中煎り)</option>
-                            <option value="ハイ">ハイ</option>
-                            <option value="シティ">シティ (中深煎り)</option>
-                            <option value="フルシティ">フルシティ</option>
-                            <option value="フレンチ">フレンチ (深煎り)</option>
-                            <option value="イタリアン">イタリアン</option>
-                        </select>
-                    </div>
-                    <div class="form-group half">
-                        <label for="brewMethod">抽出 / BREW</label>
-                        <select id="brewMethod">
-                            <option value="ハンドドリップ">ハンドドリップ</option>
-                            <option value="フレンチプレス">フレンチプレス</option>
-                            <option value="エスプレッソ">エスプレッソ</option>
-                            <option value="エアロプレス">エアロプレス</option>
-                            <option value="水出し">水出し</option>
-                        </select>
-                    </div>
-                </div>
+        <form id="brewForm">
+          <label>
+            Coffee Name
+            <input type="text" id="coffeeName" placeholder="Ethiopia Yirgacheffe" required />
+          </label>
 
-                <div class="form-group">
-                    <label for="rating">評価 / RATING (1-5)</label>
-                    <div class="range-wrap">
-                        <input type="range" id="rating" min="1" max="5" step="0.5" value="3" oninput="document.getElementById('ratingVal').innerText = this.value">
-                        <span id="ratingVal" class="rating-display">3</span>
-                    </div>
-                </div>
+          <label>
+            Roaster
+            <input type="text" id="roaster" placeholder="Coffee Collective" />
+          </label>
 
-                <div class="form-group">
-                    <label for="memo">メモ / MEMO</label>
-                    <textarea id="memo" rows="3" placeholder="香り、酸味、苦味の感想など..."></textarea>
-                </div>
+          <div class="row">
+            <label class="row-item">
+              Method
+              <select id="method">
+                <option value="V60">V60</option>
+                <option value="Aeropress">Aeropress</option>
+                <option value="French Press">French Press</option>
+                <option value="Espresso">Espresso</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
 
-                <button id="saveBtn" class="wood-btn">
-                    <span>保存する</span>
-                </button>
-            </section>
+            <label class="row-item">
+              Rating
+              <select id="rating">
+                <option value="5">★★★★★</option>
+                <option value="4">★★★★☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="1">★☆☆☆☆</option>
+              </select>
+            </label>
+          </div>
 
-            <section class="log-section">
-                <h3><span class="icon">📖</span> ログ一覧 / HISTORY</h3>
-                <div id="logList" class="log-list">
-                    </div>
-            </section>
-        </main>
+          <label>
+            Flavor Notes (comma separated)
+            <input
+              type="text"
+              id="notes"
+              placeholder="Floral, Citrus, Honey"
+            />
+          </label>
+
+          <label>
+            Date
+            <input type="date" id="brewDate" />
+          </label>
+
+          <button type="submit" class="primary-btn">Save Brew</button>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
